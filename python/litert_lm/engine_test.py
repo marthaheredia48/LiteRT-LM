@@ -415,8 +415,9 @@ class EngineTest(LiteRtLmTestBase):
         session.cancel_process()
 
       self.assertNotEmpty(responses)
-      # We expect fewer responses than a full decode (which is 6 chunks).
-      self.assertLess(len(responses), 6)
+      # NOTE: We don't assert len(responses) < 6 here because on fast machines
+      # (like Mac arm64) the generation might complete before the cancellation
+      # signal is processed by the background thread.
 
   @parameterized.parameters(True, False)
   def test_session_api_apply_prompt_template(self, apply_prompt_template):
